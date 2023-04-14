@@ -40,53 +40,84 @@ const update = async (obs) => {
         const reference = source.name.split('|sheet')[1].trim();
 
         let col = reference.match("[a-zA-Z]+");
-        let colnumber = columnToNumber(col[0]) - coloffset;
+        let colnumber = 3//columnToNumber(col[0]) - coloffset;
         
         let row = reference.match("[0-9]+");
         let rownumber = row[0] - rowoffset;
 
         let cellvalue = data[colnumber][rownumber];
         console.log("Value for cell in source is " + cellvalue)
+		
+		let sourcetype = data[2][rownumber]
+		// If Source type is Text
+		if (sourcetype == "Text"){
+			
+			if (cellvalue.length > 0) {
+			  let color = null;
 
-            if (cellvalue.length > 0) {
-              let color = null;
+			  if (cellvalue.startsWith('?color')) {
+				const split = cellvalue.split(';');
+				cellvalue = split[1];
+				color = split[0].split('=')[1];
+				color = color.replace('#', '');
+				const color1 = color.substring(0, 2);
+				const color2 = color.substring(2, 4);
+				const color3 = color.substring(4, 6);
+				color = parseInt('ff' + color3 + color2 + color1, 16);
+			  }
 
-              if (cellvalue.startsWith('?color')) {
-                const split = cellvalue.split(';');
-                cellvalue = split[1];
-                color = split[0].split('=')[1];
-                color = color.replace('#', '');
-                const color1 = color.substring(0, 2);
-                const color2 = color.substring(2, 4);
-                const color3 = color.substring(4, 6);
-                color = parseInt('ff' + color3 + color2 + color1, 16);
-              }
-
-              if (cellvalue.startsWith('?hide')) {
-                await obs.send("SetSceneItemRender", {
-                  'scene-name': scene.name,
-                  source: source.name,
-                  render: false
-                });
-              } else if (cellvalue.startsWith('?show')) {
-                await obs.send("SetSceneItemRender", {
-                  'scene-name': scene.name,
-                  source: source.name,
-                  render: true
-                });
-              }
-              
-              
-              // Update to OBS
-              await obs.send("SetTextGDIPlusProperties", {
-                source: source.name,
-                text: cellvalue,
-                color: color
-              });
-              console.log(`Updated: ${reference} to OBS: ${source.name}`);
-            } else {
-              console.log(`Field is empty idk`)
-        }
+			  if (cellvalue.startsWith('?hide')) {
+				const split = cellvalue.split(';');
+				cellvalue = split[1];
+				await obs.send("SetSceneItemRender", {
+				  'scene-name': scene.name,
+				  source: source.name,
+				  render: false
+				});
+			  } else if (cellvalue.startsWith('?show')) {
+				const split = cellvalue.split(';');
+				cellvalue = split[1];
+				await obs.send("SetSceneItemRender", {
+				  'scene-name': scene.name,
+				  source: source.name,
+				  render: true
+				});
+			  }
+			  
+			  
+			  // Update to OBS
+			  await obs.send("SetTextGDIPlusProperties", {
+				source: source.name,
+				text: cellvalue,
+				color: color
+			  });
+			  console.log(`Updated: ${reference} to OBS: ${source.name}`);
+			} else {
+			  console.log(`Field is empty idk`)
+			}
+		}
+		// If Source type is Color
+		if (sourcetype == "Color"){
+			let color = null;
+			color = cellvalue
+			color = color.replace('#', '');
+			const color1 = color.substring(0, 2);
+			const color2 = color.substring(2, 4);
+			const color3 = color.substring(4, 6);
+			color = parseInt('ff' + color3 + color2 + color1, 16);
+			let settingsinfo = {
+				color: color
+			}
+			 
+			await obs.send("SetSourceSettings", {
+				source: source.name,
+				sourceType: source.type,
+				sourceSettings: {
+					color: color
+				}
+			});	
+			
+		}
       }
     });
   });
