@@ -29,7 +29,7 @@ Open `config-dist.json` and set the following values:
 Save the file as `config.json`
 
 ## OBS Setup
-To enable an OBS source to be controlled via the sheet, name the source in this format: `[Arbitrary Source Name] |sheet [Cell]`
+To enable an OBS source to be controlled via the sheet, name the source in this format: `[Arbitrary Source Name] |sheet [Row #]`
 
 For example, `Text Source 1 |sheet C5` would be controlled by the contents of cell C5.
 
