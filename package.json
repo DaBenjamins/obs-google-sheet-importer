@@ -2,7 +2,7 @@
   "name": "obs-google-sheet-importer",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/RCVolus/obs-google-sheet-importer.git",
+  "repository": "https://github.com/DaBenjamins/obs-google-sheet-importer.git",
   "author": "Lars Bärtschi <lars.baertschi@bluewin.ch>",
   "license": "MIT",
   "dependencies": {
