@@ -3,11 +3,13 @@ const OBSWebSocket = require('obs-websocket-js');
 const sheetLoader = require('./sheet-loader');
 const config = require('./config.json');
 
+let json = [];
+
 const getChildren = sources => {
 	let items = sources;
 	sources.forEach(source => {
 		if (source.type === 'group') {
-		items = items.concat(getChildren(source.groupChildren));
+			items = items.concat(getChildren(source.groupChildren));
 		}
 	});
 	return items;
@@ -18,34 +20,34 @@ const update = async (obs) => {
 	const data = await sheetLoader.loadData();
 
 	const { readFileSync } = require('fs');
-	let json = readFileSync('./data.json', 'utf8');
+	json = readFileSync('./data.json', 'utf8');
 	json = JSON.parse(json);
     	
 	if ( data.toString() != json.toString()) {
 				
 		console.log("Sheets Updated");
   			
-		const range = config.range;
-		const startcell = range.split(":")[0].trim();
+	  const range = config.range;
+	  const startcell = range.split(":")[0].trim();
 
-		const startcol = startcell.match("[a-zA-Z]+");
-		//console.log("starting column is " + startcol);
-		const startrow = startcell.match("[0-9]+");
-		//console.log("starting row is " + startrow);
+	  const startcol = startcell.match("[a-zA-Z]+");
+	  //console.log("starting column is " + startcol);
+	  const startrow = startcell.match("[0-9]+");
+	  //console.log("starting row is " + startrow);
 
-		const rowoffset = startrow[0];
-		//console.log("row offset to array is " + rowoffset);
-		const coloffset = columnToNumber(startcol[0]);
-		//console.log("colum offset to array is " + coloffset);
+	  const rowoffset = startrow[0];
+	  //console.log("row offset to array is " + rowoffset);
+	  const coloffset = columnToNumber(startcol[0]);
+	  //console.log("colum offset to array is " + coloffset);
 
-		const sceneList = await obs.send('GetSceneList');
-		await sceneList.scenes.forEach(async scene => {
-			// unfold group children
-			const allSources = getChildren(scene.sources);
+	  const sceneList = await obs.send('GetSceneList');
+	  await sceneList.scenes.forEach(async scene => {
+		// unfold group children
+		const allSources = getChildren(scene.sources);
 
-			// console.log(scene);
-			await allSources.forEach(async source => {
-			  if (source.name.includes('|sheet')) {
+		// console.log(scene);
+		await allSources.forEach(async source => {
+			if (source.name.includes('|sheet')) {
 				const reference = source.name.split('|sheet')[1].trim();
 
 				let col = reference.match("[a-zA-Z]+");
@@ -153,9 +155,9 @@ const update = async (obs) => {
 						
 					}
 				}
-			  }
-			});
+			}
 		});
+	  });
 
 		const fs = require('fs');
 		const jsonContent = JSON.stringify(data);
@@ -164,6 +166,7 @@ const update = async (obs) => {
 			if (err) {
 				return console.log(err);
 			}
+
 			console.log("The file was saved!");
 		}); 
 	}
