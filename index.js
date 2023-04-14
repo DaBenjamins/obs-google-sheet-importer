@@ -50,9 +50,10 @@ const update = async (obs) => {
 		
 		let sourcetype = data[2][rownumber]
 		// If Source type is Text
-		if (sourcetype == "Text"){
+		if (cellvalue != undefined) {
 			
-			if (cellvalue.length > 0) {
+			if (sourcetype == "Text"){
+				
 			  let color = null;
 
 			  if (cellvalue.startsWith('?color')) {
@@ -92,31 +93,47 @@ const update = async (obs) => {
 				color: color
 			  });
 			  console.log(`Updated: ${reference} to OBS: ${source.name}`);
-			} else {
-			  console.log(`Field is empty idk`)
+				
 			}
-		}
-		// If Source type is Color
-		if (sourcetype == "Color"){
-			let color = null;
-			color = cellvalue
-			color = color.replace('#', '');
-			const color1 = color.substring(0, 2);
-			const color2 = color.substring(2, 4);
-			const color3 = color.substring(4, 6);
-			color = parseInt('ff' + color3 + color2 + color1, 16);
-			let settingsinfo = {
-				color: color
+		
+			// If Source type is Color
+			if (sourcetype == "Color"){
+				let color = null;
+				color = cellvalue
+				color = color.replace('#', '');
+				const color1 = color.substring(0, 2);
+				const color2 = color.substring(2, 4);
+				const color3 = color.substring(4, 6);
+				color = parseInt('ff' + color3 + color2 + color1, 16);
+							
+				await obs.send("SetSourceSettings", {
+					sourceName: source.name,
+					sourceType: source.type,
+					sourceSettings: {
+						color: color
+					}
+				});	
+				
 			}
-			 
-			//await obs.send("SetSourceSettings", {
-			//	source: source.name,
-			//	sourceType: source.type,
-			//	sourceSettings: {
-			//		color: color
-			//	}
-			//});	
-			
+			if (sourcetype == "Image"){
+				
+				await obs.send("SetSourceSettings", {
+					sourceName: source.name,
+					sourceType: source.type,
+					sourceSettings: {
+						file: cellvalue
+					}
+				});	
+				
+			}
+			if (sourcetype == "Browser"){
+				
+				await obs.send("SetBrowserSourceProperties", {
+					source: source.name,
+					url: cellvalue
+				});	
+				
+			}
 		}
       }
     });
