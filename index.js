@@ -3,7 +3,7 @@ const OBSWebSocket = require('obs-websocket-js');
 const sheetLoader = require('./sheet-loader');
 const config = require('./config.json');
 
-let pastdata = {};
+let json = [];
 
 const getChildren = sources => {
   let items = sources;
@@ -19,12 +19,13 @@ const update = async (obs) => {
 	
   const data = await sheetLoader.loadData();
 
-  const json = require('./data.json');
-
-	
+  const { readFileSync } = require('fs');
+  json = readFileSync('./data.json', 'utf8');
+  json = JSON.parse(json);
+    	
 	if ( data.toString() != json.toString()) {
-		
-		console.log("Not Same");
+				
+		console.log("Sheets Updated");
   			
 	  const range = config.range;
 	  const startcell = range.split(":")[0].trim();
@@ -127,14 +128,23 @@ const update = async (obs) => {
 				}
 				if (sourcetype == "Image"){
 					
-					await obs.send("SetSourceSettings", {
+					let imagesettings = await obs.send("GetSourceSettings", {
 						sourceName: source.name,
 						sourceType: source.type,
-						sourceSettings: {
-							file: cellvalue
-						}
 					});	
-					
+					//console.log(imagesettings);
+					let oldfile = imagesettings['sourceSettings']['file']
+					//console.log(oldfile);
+					if (cellvalue != oldfile){
+						console.log('image updated');
+						await obs.send("SetSourceSettings", {
+							sourceName: source.name,
+							sourceType: source.type,
+							sourceSettings: {
+								file: cellvalue
+							}
+						});	
+					}			
 				}
 				if (sourcetype == "Browser"){
 					
