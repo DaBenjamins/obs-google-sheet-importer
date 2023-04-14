@@ -2,9 +2,9 @@
 This tool allows you to dynamically update content, color and visibility of text sources in OBS through a google sheet.
 
 # Prerequisites
-- Node.js (tested on [16.7](https://nodejs.org/download/release/v16.7.0/node-v16.7.0-x64.msi))
+- Node.js (tested on [18.16](https://nodejs.org/en/download))
 - [Google Sheets API Key](https://developers.google.com/sheets/api/guides/authorizing#APIKey)
-- [OBS Websocket](https://github.com/obsproject/obs-websocket)
+- [OBS Websocket v4](https://github.com/obsproject/obs-websocket)
 
 # Installation
 - Download the source
@@ -19,7 +19,7 @@ The source spreadsheet needs to be set to allow anyone with the link to view, ot
 Open `config-dist.json` and set the following values:
 - sheetId: The ID of the google sheet (you can copy this from the sheets link, e.g. `https://docs.google.com/spreadsheets/d/this-bit-here-is-the-sheet-id/edit#gid=0`)
 - tabname: The tab name where you need data from
-- range: The range of cells you need data from (in A1 notation, e.g. `D2:G7`)
+- range: The range of cells you need data from (in A1 notation, e.g. `A1:D10`)
 - apikey: Your Google Sheets API Key
 - obsaddress: The address of your OBS Websocket, default is localhost:4444 for local OBS instance
 - obsauth: The password configured in your OBS Websocket, leave empty for no authentication
