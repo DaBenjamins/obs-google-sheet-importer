@@ -6,22 +6,22 @@ const config = require('./config.json');
 let json = [];
 
 const getChildren = sources => {
-  let items = sources;
-  sources.forEach(source => {
-    if (source.type === 'group') {
-      items = items.concat(getChildren(source.groupChildren));
-    }
-  });
-  return items;
+	let items = sources;
+	sources.forEach(source => {
+		if (source.type === 'group') {
+		items = items.concat(getChildren(source.groupChildren));
+		}
+	});
+	return items;
 }
 
 const update = async (obs) => {
 	
-  const data = await sheetLoader.loadData();
+	const data = await sheetLoader.loadData();
 
-  const { readFileSync } = require('fs');
-  json = readFileSync('./data.json', 'utf8');
-  json = JSON.parse(json);
+	const { readFileSync } = require('fs');
+	json = readFileSync('./data.json', 'utf8');
+	json = JSON.parse(json);
     	
 	if ( data.toString() != json.toString()) {
 				
@@ -65,45 +65,45 @@ const update = async (obs) => {
 					
 					if (sourcetype == "Text"){
 						
-					  let color = null;
+						let color = null;
 
-					  if (cellvalue.startsWith('?color')) {
-						const split = cellvalue.split(';');
-						cellvalue = split[1];
-						color = split[0].split('=')[1];
-						color = color.replace('#', '');
-						const color1 = color.substring(0, 2);
-						const color2 = color.substring(2, 4);
-						const color3 = color.substring(4, 6);
-						color = parseInt('ff' + color3 + color2 + color1, 16);
-					  }
+						if (cellvalue.startsWith('?color')) {
+							const split = cellvalue.split(';');
+							cellvalue = split[1];
+							color = split[0].split('=')[1];
+							color = color.replace('#', '');
+							const color1 = color.substring(0, 2);
+							const color2 = color.substring(2, 4);
+							const color3 = color.substring(4, 6);
+							color = parseInt('ff' + color3 + color2 + color1, 16);
+						}
 
-					  if (cellvalue.startsWith('?hide')) {
-						const split = cellvalue.split(';');
-						cellvalue = split[1];
-						await obs.send("SetSceneItemRender", {
-						  'scene-name': scene.name,
-						  source: source.name,
-						  render: false
-						});
-					  } else if (cellvalue.startsWith('?show')) {
-						const split = cellvalue.split(';');
-						cellvalue = split[1];
-						await obs.send("SetSceneItemRender", {
-						  'scene-name': scene.name,
-						  source: source.name,
-						  render: true
-						});
-					  }
+						if (cellvalue.startsWith('?hide')) {
+							const split = cellvalue.split(';');
+							cellvalue = split[1];
+							await obs.send("SetSceneItemRender", {
+								'scene-name': scene.name,
+								source: source.name,
+								render: false
+							});
+						} else if (cellvalue.startsWith('?show')) {
+							const split = cellvalue.split(';');
+							cellvalue = split[1];
+							await obs.send("SetSceneItemRender", {
+								'scene-name': scene.name,
+								source: source.name,
+								render: true
+							});
+						}
 					  
 					  
-					  // Update to OBS
-					  await obs.send("SetTextGDIPlusProperties", {
-						source: source.name,
-						text: cellvalue,
-						color: color
-					  });
-					  console.log(`Updated: ${reference} to OBS: ${source.name}`);
+						// Update to OBS
+						await obs.send("SetTextGDIPlusProperties", {
+							source: source.name,
+							text: cellvalue,
+							color: color
+						});
+						console.log(`Updated: ${reference} to OBS: ${source.name}`);
 						
 					}
 				
@@ -116,7 +116,7 @@ const update = async (obs) => {
 						const color2 = color.substring(2, 4);
 						const color3 = color.substring(4, 6);
 						color = parseInt('ff' + color3 + color2 + color1, 16);
-									
+						
 						await obs.send("SetSourceSettings", {
 							sourceName: source.name,
 							sourceType: source.type,
@@ -172,33 +172,33 @@ const update = async (obs) => {
 }
 
 const main = async () => {
-  const obs = new OBSWebSocket();
-  if (config.obsauth != "") {
-    await obs.connect({ address: config.obsaddress, password: config.obsauth });
-  }
-  else {
-    await obs.connect({ address: config.obsaddress });
-  }
-  console.log('Connected to OBS!');
+	const obs = new OBSWebSocket();
+	if (config.obsauth != "") {
+		await obs.connect({ address: config.obsaddress, password: config.obsauth });
+	}
+	else {
+		await obs.connect({ address: config.obsaddress });
+	}
+	console.log('Connected to OBS!');
 
-  const updateWrapped = () => update(obs).catch(e => {
-    console.log("EXECUTION ERROR IN MAIN LOOP:");
-    console.log(e);
-  });
+	const updateWrapped = () => update(obs).catch(e => {
+		console.log("EXECUTION ERROR IN MAIN LOOP:");
+		console.log(e);
+	});
 
-  setInterval(updateWrapped, config.polling);
-  updateWrapped();
+	setInterval(updateWrapped, config.polling);
+	updateWrapped();
 }
 
 main().catch(e => {
-  console.log("EXECUTION ERROR:");
-  console.log(e);
+	console.log("EXECUTION ERROR:");
+	console.log(e);
 });
 
 function columnToNumber(str) {
-  var out = 0, len = str.length;
-  for (pos = 0; pos < len; pos++) {
-    out += (str.charCodeAt(pos) - 64) * Math.pow(26, len - pos - 1);
-  }
-  return out-1;
+	var out = 0, len = str.length;
+	for (pos = 0; pos < len; pos++) {
+		out += (str.charCodeAt(pos) - 64) * Math.pow(26, len - pos - 1);
+	}
+	return out-1;
 }
