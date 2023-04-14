@@ -3,8 +3,6 @@ const OBSWebSocket = require('obs-websocket-js');
 const sheetLoader = require('./sheet-loader');
 const config = require('./config.json');
 
-let json = [];
-
 const getChildren = sources => {
 	let items = sources;
 	sources.forEach(source => {
@@ -20,7 +18,7 @@ const update = async (obs) => {
 	const data = await sheetLoader.loadData();
 
 	const { readFileSync } = require('fs');
-	json = readFileSync('./data.json', 'utf8');
+	let json = readFileSync('./data.json', 'utf8');
 	json = JSON.parse(json);
     	
 	if ( data.toString() != json.toString()) {
