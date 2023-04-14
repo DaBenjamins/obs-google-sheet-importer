@@ -109,13 +109,13 @@ const update = async (obs) => {
 				color: color
 			}
 			 
-			await obs.send("SetSourceSettings", {
-				source: source.name,
-				sourceType: source.type,
-				sourceSettings: {
-					color: color
-				}
-			});	
+			//await obs.send("SetSourceSettings", {
+			//	source: source.name,
+			//	sourceType: source.type,
+			//	sourceSettings: {
+			//		color: color
+			//	}
+			//});	
 			
 		}
       }
