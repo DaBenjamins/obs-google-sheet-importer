@@ -7,6 +7,6 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.20.0",
-    "obs-websocket-js": "^4.0.1"
+    "obs-websocket-js": "^4.0.3"
   }
 }
