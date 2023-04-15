@@ -1,7 +1,7 @@
 {
   "sheetId": "id",
   "tabname": "Sheet1",
-  "range": "A1:A1",
+  "range": "C2:D50",
   "dimension": "COLUMNS",
   "apikey": "secretkey",
   "obsaddress": "localhost:4444",
