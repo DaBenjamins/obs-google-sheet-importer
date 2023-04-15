@@ -24,3 +24,15 @@ module.exports = {
   loadData,
   loadPage
 }
+
+loadData().catch(e =>  {
+    console.log('------------------');
+    console.log(e.message);
+    console.log('--------')
+})
+
+loadPage().catch(e =>  {
+    console.log('------------------');
+    console.log(e.message);
+    console.log('--------')
+})
