@@ -2,7 +2,7 @@
 This tool allows you to dynamically update content, color and visibility of text sources in OBS through a google sheet.
 
 # Prerequisites
-- [Node.js (tested on 18.16(https://nodejs.org/en/download))]
+- [Node.js (tested on 18.16)](https://nodejs.org/en/download)
 - [Google Sheets API Key](https://developers.google.com/sheets/api/guides/authorizing#APIKey)
 - [OBS Websocket v4](https://github.com/obsproject/obs-websocket)
 - [Google sheet (example)](https://docs.google.com/spreadsheets/d/1Z1MlruzHm0UYCNO4cTlcDtUdWrMaRB5gwkVy7Zthl8c/)
