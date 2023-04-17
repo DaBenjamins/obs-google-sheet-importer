@@ -6,6 +6,7 @@ This tool allows you to dynamically update content, color and visibility of text
 - [Google Sheets API Key](https://developers.google.com/sheets/api/guides/authorizing#APIKey)
 - [OBS Websocket v4](https://github.com/obsproject/obs-websocket)
 - [Google sheet (example)](https://docs.google.com/spreadsheets/d/1Z1MlruzHm0UYCNO4cTlcDtUdWrMaRB5gwkVy7Zthl8c/)
+- [OBS Asynchronous image source Plugin (recommended if updating image sources)](https://obsproject.com/forum/resources/xobsasyncimagesource-asynchronous-image-source.1681/)
 
 # Installation
 - Download the source
