@@ -43,17 +43,13 @@ Change the cell text to begin with `?hide;Any text here` or `?show;Any text here
 Change the cell text to `?color=000000;Any text here` to set the text color in OBS with hex colors.
 
 ## Controlling Image Sources
-### Setting Image
 Any image URL in a cell is set as the image in the source. Empty cells are not updated.
 
 ## Controlling Color Sources
-### Setting Color
 Any #hexcode in a cell is set as the color in the source. Empty cells are not updated.
 
 ## Controlling Browser Sources
-### Setting Browser URL
 Any URL in a cell is set as the webpage in the source. Empty cells are not updated.
 
 ## Controlling Visability Only
-### Setting Visability
 Any "hide"/"show" in a cell is set as the sources visability. Empty cells are not updated.
