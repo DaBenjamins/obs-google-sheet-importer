@@ -41,3 +41,19 @@ Any text in a cell is set as the text in the source. Empty cells are not updated
 Change the cell text to begin with `?hide;Any text here` or `?show;Any text here` to disable/enable the text source (with the last text that was set)
 ### Changing text color
 Change the cell text to `?color=000000;Any text here` to set the text color in OBS with hex colors.
+
+## Controlling Image Sources
+### Setting Image
+Any image URL in a cell is set as the image in the source. Empty cells are not updated.
+
+## Controlling Color Sources
+### Setting Color
+Any #hexcode in a cell is set as the color in the source. Empty cells are not updated.
+
+## Controlling Browser Sources
+### Setting Browser URL
+Any URL in a cell is set as the webpage in the source. Empty cells are not updated.
+
+## Controlling Visability Only
+### Setting Visability
+Any "hide"/"show" in a cell is set as the sources visability. Empty cells are not updated.
