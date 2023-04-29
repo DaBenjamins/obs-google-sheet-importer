@@ -4,7 +4,6 @@ This tool allows you to dynamically update content, color and visibility of text
 # Prerequisites
 - [Node.js (tested on 18.16)](https://nodejs.org/en/download)
 - [Google Sheets API Key](https://developers.google.com/sheets/api/guides/authorizing#APIKey)
-- [OBS Websocket v4](https://github.com/obsproject/obs-websocket)
 - [Google sheet (example)](https://docs.google.com/spreadsheets/d/1Z1MlruzHm0UYCNO4cTlcDtUdWrMaRB5gwkVy7Zthl8c/)
 - [OBS Asynchronous image source Plugin (recommended if updating image sources)](https://obsproject.com/forum/resources/xobsasyncimagesource-asynchronous-image-source.1681/)
 
@@ -22,7 +21,7 @@ Open `config-dist.json` and set the following values:
 - tabname: The tab name where you need data from
 - range: The range of Rows you need data from, must be column C through D (in A1 notation, e.g. `C1:D50`)
 - apikey: Your Google Sheets API Key
-- obsaddress: The address of your OBS Websocket, default is localhost:4444 for local OBS instance
+- obsaddress: The address of your OBS Websocket, default is ws://localhost:4455 for local OBS instance
 - obsauth: The password configured in your OBS Websocket, leave empty for no authentication
 - polling: The frequency of updates in ms, defaults to 2000 (the google API maxes out at 1 request per second)
 - dimension: controls the major dimension in the API query, don't touch unless you know what you are doing
