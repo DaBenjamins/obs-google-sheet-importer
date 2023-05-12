@@ -53,9 +53,6 @@ const update = async (obs) => {
 					// If Cell is empty skip
 					if (cellvalue != undefined) {
 						// If Source type is Text
-						console.log('sourcetype');
-						console.log(sourcetype);
-						console.log(rownumber);
 						if (sourcetype == "Text"){
 							let color = null;
 							//check if ?color tag is present
@@ -73,7 +70,7 @@ const update = async (obs) => {
 							if (cellvalue.startsWith('?hide')) {
 								const split = cellvalue.split(';');
 								cellvalue = split[1];
-								await obs.call("SetSceneItemEnable", {
+								await obs.call("SetSceneItemEnabled", {
 									sceneName: scene.sceneName,
 									sceneItemId: source.sceneItemId,
 									sceneItemEnabled: false
@@ -81,7 +78,7 @@ const update = async (obs) => {
 							} else if (cellvalue.startsWith('?show')) {
 								const split = cellvalue.split(';');
 								cellvalue = split[1];
-								await obs.call("SetSceneItemEnable", {
+								await obs.call("SetSceneItemEnabled", {
 									sceneName: scene.sceneName,
 									sceneItemId: source.sceneItemId,
 									sceneItemEnabled: true
@@ -93,8 +90,6 @@ const update = async (obs) => {
 							});
 							let oldfile = await textsettings['inputSettings']['text']
 							let oldcolor = await textsettings['inputSettings']['color']
-							console.log('OVER HERE');
-							console.log(oldfile);
 							//check if current OBS settings is different
 							if (cellvalue != oldfile){
 								if (color == null){
@@ -116,7 +111,6 @@ const update = async (obs) => {
 						}
 						// If Source type is Color
 						if (sourcetype == "Color"){
-							console.log('OVER HERE COLOR');
 							let color = null;
 							color = cellvalue
 							color = color.replace('#', '');
@@ -129,9 +123,6 @@ const update = async (obs) => {
 								inputName: source.sourceName,
 							});
 							let oldfile = await colorsettings['inputSettings']['color']
-							console.log('OVER HERE COLOR');
-							console.log(colorsettings);
-							console.log(oldfile);
 							//check if current OBS settings is different
 							if (color != oldfile){
 								console.log(`Updated: ${reference} to OBS: ${source.sourceName}`);
@@ -152,8 +143,6 @@ const update = async (obs) => {
 								inputName: source.sourceName,
 							});	
 							let oldfile = await imagesettings['inputSettings']['file']
-							console.log('OVER HERE');
-							console.log(oldfile);
 							//check if current OBS settings is different
 							if (cellvalue != oldfile){
 								console.log(`Updated: ${reference} to OBS: ${source.sourceName}`);
@@ -174,8 +163,6 @@ const update = async (obs) => {
 								inputName: source.sourceName
 							});
 							let oldfile = await browsersettings['inputSettings']['url']
-							console.log('OVER HERE');
-							console.log(oldfile);
 							//check if current OBS settings is different
 							if (cellvalue != oldfile){
 								console.log(`Updated: ${reference} to OBS: ${source.sourceName}`);
@@ -192,13 +179,13 @@ const update = async (obs) => {
 						// If Source type is HS
 						if (sourcetype == "HS"){
 							if (cellvalue.startsWith('hide')) {
-								await obs.call("SetSceneItemEnable", {
+								await obs.call("SetSceneItemEnabled", {
 									sceneName: scene.sceneName,
 									sceneItemId: source.sceneItemId,
 									sceneItemEnabled: false
 								});
 							} else if (cellvalue.startsWith('show')) {
-								await obs.call("SetSceneItemEnable", {
+								await obs.call("SetSceneItemEnabled", {
 									sceneName: scene.sceneName,
 									sceneItemId: source.sceneItemId,
 									sceneItemEnabled: true
