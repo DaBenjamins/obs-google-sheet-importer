@@ -9,6 +9,7 @@ This tool allows you to dynamically update content, color and visibility of text
 
 # Installation
 - Download the source
+- Download and Install Node.js
 - Run install.bat
 
 # Usage
