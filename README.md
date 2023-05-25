@@ -36,9 +36,9 @@ For example, `Text Source 1 |sheet 5` would be controlled by the contents of Row
 ## Controlling Text Sources
 ### Setting Text
 Any text in a cell is set as the text in the source. Empty cells are not updated.
-### Hiding/Showing a source
+### Hiding/Showing a Text Source
 Change the cell text to begin with `?hide;Any text here` or `?show;Any text here` to disable/enable the text source (with the last text that was set)
-### Changing text color
+### Changing Text Color
 Change the cell text to `?color=000000;Any text here` to set the text color in OBS with hex colors.
 
 ## Controlling Image Sources
