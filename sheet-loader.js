@@ -9,7 +9,8 @@ const getSpreadsheetLink = (id, tabname, range, apikey, dimension) => `https://s
 const loadData = async () => {
   const page = await loadPage();
   
-  console.log(`============= Values loaded: ${page.values}`);
+  console.log(`============= Values loaded from sheet`);
+  //console.log(`============= Values loaded: ${page.values}`);
   return page.values;
 }
 

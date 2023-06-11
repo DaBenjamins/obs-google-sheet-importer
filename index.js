@@ -5,20 +5,20 @@ const config = require('./config.json');
 
 const update = async (obs) => {
 	const data = await sheetLoader.loadData();
-  
   	const { readFileSync } = await require('fs');
+	//Reads Data.json
 	try {
 		json = readFileSync('./data.json', 'utf8');
 	}catch(e){
 		json = "[]";
 	};
-	
+	//if empty check
 	if (json == undefined || json == ""){
 		json = "[]";
 	}
 	json = JSON.parse(json);
 	
-		//check if sheets is same as json
+	//check if sheets is same as json
 	if ( data.toString() != json.toString()) {
 		
 		console.log("Sheets Updated");		
@@ -108,9 +108,9 @@ const update = async (obs) => {
 										color: color
 									}
 								});
-								console.log(`Updated: ${reference} to OBS: ${source.sourceName}`);
+								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
 							} else {
-								console.log('text is the same');
+								//console.log('text is the same');
 							}
 							
 						}
@@ -130,7 +130,7 @@ const update = async (obs) => {
 							let oldfile = await colorsettings['inputSettings']['color']
 							//check if current OBS settings is different
 							if (color != oldfile){
-								console.log(`Updated: ${reference} to OBS: ${source.sourceName}`);
+								console.log(`Updated: ${reference} from ${oldfile} to ${color} on source: ${source.sourceName}`);
 								await obs.call("SetInputSettings", {
 									inputName: source.sourceName,
 									inputSettings: {
@@ -138,7 +138,7 @@ const update = async (obs) => {
 									}
 								});	
 							} else {
-								console.log('Color is the same');
+								//console.log('Color is the same');
 							}
 						}
 						// If Source type is Image
@@ -150,7 +150,7 @@ const update = async (obs) => {
 							let oldfile = await imagesettings['inputSettings']['file']
 							//check if current OBS settings is different
 							if (cellvalue != oldfile){
-								console.log(`Updated: ${reference} to OBS: ${source.sourceName}`);
+								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
 								await obs.call("SetInputSettings", {
 									inputName: source.sourceName,
 									inputSettings: {
@@ -158,7 +158,7 @@ const update = async (obs) => {
 									}
 								});	
 							} else {
-								console.log('Image is the same');
+								//console.log('Image is the same');
 							}
 						}
 						// If Source type is Browser
@@ -170,7 +170,7 @@ const update = async (obs) => {
 							let oldfile = await browsersettings['inputSettings']['url']
 							//check if current OBS settings is different
 							if (cellvalue != oldfile){
-								console.log(`Updated: ${reference} to OBS: ${source.sourceName}`);
+								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
 								await obs.call("SetInputSettings", {
 									inputName: source.sourceName,
 									inputSettings: {
@@ -178,7 +178,7 @@ const update = async (obs) => {
 									}
 								});
 							} else {
-								console.log('Browser is the same');
+								//console.log('Browser is the same');
 							}
 						}
 						// If Source type is HS
@@ -189,14 +189,15 @@ const update = async (obs) => {
 									sceneItemId: source.sceneItemId,
 									sceneItemEnabled: false
 								});
+								console.log(`Updated: ${reference} set to hidden on source: ${source.sourceName}`);
 							} else if (cellvalue.startsWith('show')) {
 								await obs.call("SetSceneItemEnabled", {
 									sceneName: scene.sceneName,
 									sceneItemId: source.sceneItemId,
 									sceneItemEnabled: true
 								});
+								console.log(`Updated: ${reference} set to visible on source: ${source.sourceName}`);
 							}
-							console.log(`Updated: ${reference} to OBS: ${source.sourceName}`);
 						}
 					}
 				}
