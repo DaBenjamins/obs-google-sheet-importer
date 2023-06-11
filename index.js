@@ -206,10 +206,14 @@ const update = async (obs) => {
 const main = async () => {
   const obs = new OBSWebSocket();
   if (config.obsauth != "") {
-    await obs.connect(config.obsaddress, config.obsauth);
+    await obs.connect(config.obsaddress, config.obsauth).catch(e => {
+		throw "FAILED TO CONNECT";
+	});
   }
   else {
-    await obs.connect(config.obsaddress);
+    await obs.connect(config.obsaddress).catch(e => {
+		throw "FAILED TO CONNECT";
+	});
   }
   console.log('Connected to OBS!');
 
