@@ -8,8 +8,11 @@ const update = async (obs) => {
   
   	const { readFileSync } = await require('fs');
 	json = readFileSync('./data.json', 'utf8');
-	if (json == undefined){
-		json = [];
+	console.log("HERE JSON");
+	console.log(json);
+	if (json == undefined || json == ""){
+		console.log("HERE JSON Fix?");
+		json = "[]";
 	}
 	json = JSON.parse(json);
 	
