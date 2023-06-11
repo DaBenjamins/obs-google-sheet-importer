@@ -7,11 +7,13 @@ const update = async (obs) => {
 	const data = await sheetLoader.loadData();
   
   	const { readFileSync } = await require('fs');
-	json = readFileSync('./data.json', 'utf8');
-	console.log("HERE JSON");
-	console.log(json);
+	try {
+		json = readFileSync('./data.json', 'utf8');
+	}catch(e){
+		json = "[]";
+	};
+	
 	if (json == undefined || json == ""){
-		console.log("HERE JSON Fix?");
 		json = "[]";
 	}
 	json = JSON.parse(json);
