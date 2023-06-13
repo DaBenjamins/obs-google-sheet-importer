@@ -22,17 +22,7 @@ const update = async (obs) => {
 	if ( data.toString() != json.toString()) {
 		
 		console.log("Sheets Updated");		
-		
-		// Write data.json to check if sheets been changed
-		const fs = await require('fs');
-		const jsonContent = await JSON.stringify(data);
-		await fs.writeFile("./data.json", jsonContent, 'utf8', function (err) {
-			if (err) {
-				return console.log(err);
-			}
-			console.log("The file was saved!");
-		});
-    
+		    
 		const range = config.range;
 		const startcell = range.split(":")[0].trim();
 
@@ -203,30 +193,48 @@ const update = async (obs) => {
 				}
 			});  
 		});
+		
+		// Write data.json to check if sheets been changed
+		const fs = await require('fs');
+		const jsonContent = await JSON.stringify(data);
+		await fs.writeFile("./data.json", jsonContent, 'utf8', function (err) {
+			if (err) {
+				return console.log(err);
+			}
+			console.log("The file was saved!");
+		});
 	}
 }
 
 const main = async () => {
-  const obs = new OBSWebSocket();
-  if (config.obsauth != "") {
-    await obs.connect(config.obsaddress, config.obsauth).catch(e => {
-		throw "FAILED TO CONNECT";
-	});
-  }
-  else {
-    await obs.connect(config.obsaddress).catch(e => {
-		throw "FAILED TO CONNECT";
-	});
-  }
-  console.log('Connected to OBS!');
+	const obs = new OBSWebSocket();
+	let coned = 0
 
-  const updateWrapped = () => update(obs).catch(e => {
-    console.log("EXECUTION ERROR IN MAIN LOOP:");
-    console.log(e);
-  });
+	await obs.connect(config.obsaddress, config.obsauth).catch(e => {
+		console.log("FAILED TO CONNECT, Reconnecting in 5 seconds");
+		coned = 1
+		setTimeout(function(){
+		  main();
+		}, 5000);
+	});
 
-  setInterval(updateWrapped, config.polling);
-  updateWrapped();
+	if (coned == 0){
+		
+		console.log('Connected to OBS!');
+
+		const updateWrapped = () => update(obs).catch(e => {
+			if(e.message == "Not connected"){
+				obs.connect(config.obsaddress, config.obsauth).catch(e => {
+					console.log("FAILED TO RECONNECT");
+				});
+			}else{
+			console.log("EXECUTION ERROR IN MAIN LOOP:");
+			console.log(e);
+			}
+		});
+		setInterval(updateWrapped, config.polling);
+	}
+
 }
 
 main().catch(e => {
