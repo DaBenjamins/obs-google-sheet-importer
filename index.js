@@ -6,19 +6,19 @@ const config = require('./config.json');
 const update = async (obs) => {
 	const data = await sheetLoader.loadData();
   	const { readFileSync } = await require('fs');
-	//Reads Data.json
+	// --Reads Data.json
 	try {
 		json = readFileSync('./data.json', 'utf8');
 	}catch(e){
 		json = "[]";
 	};
-	//if empty check
+	// --if empty check
 	if (json == undefined || json == ""){
 		json = "[]";
 	}
 	json = JSON.parse(json);
 	
-	//check if sheets is same as json
+	// --check if sheets is same as json
 	if ( data.toString() != json.toString()) {
 		
 		console.log("Sheets Updated");		
@@ -32,9 +32,11 @@ const update = async (obs) => {
 
 		const sceneList = await obs.call('GetSceneList');
 		await sceneList.scenes.forEach(async scene => {
-			// unfold group children
+			// --Get all sources
 			const allSources = await obs.call('GetSceneItemList', {sceneName: scene.sceneName});
+			// --Unfold group children
 			//const allSources = getChildren(allSourcesNGroups);
+			// --Loop though all sources
 			await allSources.sceneItems.forEach(async source => {
 			if (source.sourceName.includes('|sheet')) {
 				const reference = source.sourceName.split('|sheet')[1].trim();
@@ -45,12 +47,12 @@ const update = async (obs) => {
 				let cellvalue = data[1][rownumber];
 				let sourcetype = data[0][rownumber];
 			
-					// If Cell is empty skip
+					// --If Cell is empty skip
 					if (cellvalue != undefined) {
-						// If Source type is Text
+						// --If Source type is Text
 						if (sourcetype == "Text"){
 							let color = null;
-							//check if ?color tag is present
+							// --check if ?color tag is present
 							if (cellvalue.startsWith('?color')) {
 								const split = cellvalue.split(';');
 								cellvalue = split[1];
@@ -61,7 +63,7 @@ const update = async (obs) => {
 								const color3 = color.substring(4, 6);
 								color = parseInt('ff' + color3 + color2 + color1, 16);
 							}
-							//check if ?hide/?show tag is present
+							// --check if ?hide/?show tag is present
 							if (cellvalue.startsWith('?hide')) {
 								const split = cellvalue.split(';');
 								cellvalue = split[1];
@@ -79,13 +81,13 @@ const update = async (obs) => {
 									sceneItemEnabled: true
 								});
 							}
-							//get settings of source from OBS
+							// --get settings of source from OBS
 							let textsettings = await obs.call("GetInputSettings", {
 								inputName: source.sourceName
 							});
 							let oldfile = await textsettings['inputSettings']['text']
 							let oldcolor = await textsettings['inputSettings']['color']
-							//check if current OBS settings is different
+							// --check if current OBS settings is different
 							if (cellvalue != oldfile){
 								if (color == null){
 									color = oldcolor
@@ -104,7 +106,7 @@ const update = async (obs) => {
 							}
 							
 						}
-						// If Source type is Color
+						// --If Source type is Color
 						if (sourcetype == "Color"){
 							let color = null;
 							color = cellvalue
@@ -113,12 +115,12 @@ const update = async (obs) => {
 							const color2 = color.substring(2, 4);
 							const color3 = color.substring(4, 6);
 							color = parseInt('ff' + color3 + color2 + color1, 16);
-							//get settings of source from OBS
+							// --get settings of source from OBS
 							let colorsettings = await obs.call("GetInputSettings", {
 								inputName: source.sourceName,
 							});
 							let oldfile = await colorsettings['inputSettings']['color']
-							//check if current OBS settings is different
+							// --check if current OBS settings is different
 							if (color != oldfile){
 								console.log(`Updated: ${reference} from ${oldfile} to ${color} on source: ${source.sourceName}`);
 								await obs.call("SetInputSettings", {
@@ -131,14 +133,14 @@ const update = async (obs) => {
 								//console.log('Color is the same');
 							}
 						}
-						// If Source type is Image
+						// --If Source type is Image
 						if (sourcetype == "Image"){
-							//get settings of source from OBS
+							// --get settings of source from OBS
 							let imagesettings = await obs.call("GetInputSettings", {
 								inputName: source.sourceName,
 							});	
 							let oldfile = await imagesettings['inputSettings']['file']
-							//check if current OBS settings is different
+							// --check if current OBS settings is different
 							if (cellvalue != oldfile){
 								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
 								await obs.call("SetInputSettings", {
@@ -151,14 +153,14 @@ const update = async (obs) => {
 								//console.log('Image is the same');
 							}
 						}
-						// If Source type is Browser
+						// --If Source type is Browser
 						if (sourcetype == "Browser"){
 							//get settings of source from OBS
 							let browsersettings = await obs.call("GetInputSettings", {
 								inputName: source.sourceName
 							});
 							let oldfile = await browsersettings['inputSettings']['url']
-							//check if current OBS settings is different
+							// --check if current OBS settings is different
 							if (cellvalue != oldfile){
 								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
 								await obs.call("SetInputSettings", {
@@ -171,7 +173,7 @@ const update = async (obs) => {
 								//console.log('Browser is the same');
 							}
 						}
-						// If Source type is HS
+						// --If Source type is HS
 						if (sourcetype == "HS"){
 							if (cellvalue.startsWith('hide')) {
 								await obs.call("SetSceneItemEnabled", {
@@ -194,7 +196,7 @@ const update = async (obs) => {
 			});  
 		});
 		
-		// Write data.json to check if sheets been changed
+		// --Write data.json to check if sheets been changed
 		const fs = await require('fs');
 		const jsonContent = await JSON.stringify(data);
 		await fs.writeFile("./data.json", jsonContent, 'utf8', function (err) {
@@ -209,21 +211,23 @@ const update = async (obs) => {
 const main = async () => {
 	const obs = new OBSWebSocket();
 	let coned = 0
-
+	// --Connect to OBS
 	await obs.connect(config.obsaddress, config.obsauth).catch(e => {
 		console.log("FAILED TO CONNECT, Reconnecting in 5 seconds");
 		coned = 1
+		// --Retry if failed
 		setTimeout(function(){
 		  main();
 		}, 5000);
 	});
-
+	
+	// --If connected updated OBS
 	if (coned == 0){
-		
 		console.log('Connected to OBS!');
-
 		const updateWrapped = () => update(obs).catch(e => {
+			// --If error check if connection issue
 			if(e.message == "Not connected"){
+				// --Reconnect to OBS
 				obs.connect(config.obsaddress, config.obsauth).catch(e => {
 					console.log("FAILED TO RECONNECT");
 				});
