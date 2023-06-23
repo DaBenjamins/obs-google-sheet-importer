@@ -20,142 +20,137 @@ const update = async (obs) => {
 	
 	//check if sheets is same as json
 	if ( data.toString() != json.toString()) {
-		
 		console.log("Sheets Updated");		
-		    
+		
 		const range = config.range;
 		const startcell = range.split(":")[0].trim();
-
 		const startrow = startcell.match("[0-9]+");
-
 		const rowoffset = startrow[0];
-
 		const sceneList = await obs.call('GetSceneList');
+		
 		await sceneList.scenes.forEach(async scene => {
 			// unfold group children
 			const allSources = await obs.call('GetSceneItemList', {sceneName: scene.sceneName});
 			//const allSources = getChildren(allSourcesNGroups);
 			await allSources.sceneItems.forEach(async source => {
-			if (source.sourceName.includes('|sheet')) {
-				const reference = source.sourceName.split('|sheet')[1].trim();
-			
-				let row = reference.match("[0-9]+");
-				let rownumber = row[0] - rowoffset;
-
-				let cellvalue = data[1][rownumber];
-				let sourcetype = data[0][rownumber];
-			
-					// If Cell is empty skip
-					//if (cellvalue != undefined) {
-						// If Source type is Text
-						if (sourcetype == "Text"){
-							let color = null;
-							//check if ?color tag is present
-							if (cellvalue.startsWith('?color')) {
-								const split = cellvalue.split(';');
-								cellvalue = split[1];
-								color = split[0].split('=')[1];
-								color = color.replace('#', '');
-								const color1 = color.substring(0, 2);
-								const color2 = color.substring(2, 4);
-								const color3 = color.substring(4, 6);
-								color = parseInt('ff' + color3 + color2 + color1, 16);
-							}
-							//check if ?hide/?show tag is present
-							if (cellvalue.startsWith('?hide')) {
-								const split = cellvalue.split(';');
-								cellvalue = split[1];
-								await obs.call("SetSceneItemEnabled", {
-									sceneName: scene.sceneName,
-									sceneItemId: source.sceneItemId,
-									sceneItemEnabled: false
-								});
-							} else if (cellvalue.startsWith('?show')) {
-								const split = cellvalue.split(';');
-								cellvalue = split[1];
-								await obs.call("SetSceneItemEnabled", {
-									sceneName: scene.sceneName,
-									sceneItemId: source.sceneItemId,
-									sceneItemEnabled: true
-								});
-							}
-							//get settings of source from OBS
-							let textsettings = await obs.call("GetInputSettings", {
-								inputName: source.sourceName
+				if (source.sourceName.includes('|sheet')) {
+					const reference = source.sourceName.split('|sheet')[1].trim();
+					let row = reference.match("[0-9]+");
+					let rownumber = row[0] - rowoffset;
+					let cellvalue = data[1][rownumber];
+					let sourcetype = data[0][rownumber];
+		
+					// If Source type is Text
+					if (sourcetype == "Text"){
+						let color = null;
+						//check if ?color tag is present
+						if (cellvalue.startsWith('?color')) {
+							const split = cellvalue.split(';');
+							cellvalue = split[1];
+							color = split[0].split('=')[1];
+							color = color.replace('#', '');
+							const color1 = color.substring(0, 2);
+							const color2 = color.substring(2, 4);
+							const color3 = color.substring(4, 6);
+							color = parseInt('ff' + color3 + color2 + color1, 16);
+						}
+						//check if ?hide/?show tag is present
+						if (cellvalue.startsWith('?hide')) {
+							const split = cellvalue.split(';');
+							cellvalue = split[1];
+							await obs.call("SetSceneItemEnabled", {
+								sceneName: scene.sceneName,
+								sceneItemId: source.sceneItemId,
+								sceneItemEnabled: false
 							});
-							let oldfile = await textsettings['inputSettings']['text']
-							let oldcolor = await textsettings['inputSettings']['color']
-							//check if current OBS settings is different
-							if (cellvalue != oldfile){
-								if (color == null){
-									color = oldcolor
+						} else if (cellvalue.startsWith('?show')) {
+							const split = cellvalue.split(';');
+							cellvalue = split[1];
+							await obs.call("SetSceneItemEnabled", {
+								sceneName: scene.sceneName,
+								sceneItemId: source.sceneItemId,
+								sceneItemEnabled: true
+							});
+						}
+						//get settings of source from OBS
+						let textsettings = await obs.call("GetInputSettings", {
+							inputName: source.sourceName
+						});
+						let oldfile = await textsettings['inputSettings']['text']
+						let oldcolor = await textsettings['inputSettings']['color']
+						//check if current OBS settings is different
+						if (cellvalue != oldfile){
+							if (color == null){
+								color = oldcolor
+							}
+							// Update to OBS
+							await obs.call("SetInputSettings", {
+								inputName: source.sourceName,
+								inputSettings: {
+									text: cellvalue,
+									color: color
 								}
-								// Update to OBS
+							});
+							console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
+						} else {
+							//console.log('text is the same');
+						}
+					}
+					// If Source type is Color
+					if (sourcetype == "Color"){
+						if (cellvalue != undefined) {
+							let color = null;
+							color = cellvalue
+							color = color.replace('#', '');
+							const color1 = color.substring(0, 2);
+							const color2 = color.substring(2, 4);
+							const color3 = color.substring(4, 6);
+							color = parseInt('ff' + color3 + color2 + color1, 16);
+							//get settings of source from OBS
+							let colorsettings = await obs.call("GetInputSettings", {
+								inputName: source.sourceName,
+							});
+							let oldfile = await colorsettings['inputSettings']['color']
+							//check if current OBS settings is different
+							if (color != oldfile){
+								console.log(`Updated: ${reference} from ${oldfile} to ${color} on source: ${source.sourceName}`);
 								await obs.call("SetInputSettings", {
 									inputName: source.sourceName,
 									inputSettings: {
-										text: cellvalue,
 										color: color
 									}
-								});
-								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
+								});	
 							} else {
-								//console.log('text is the same');
-							}
-							
-						}
-						// If Source type is Color
-						if (sourcetype == "Color"){
-							if (cellvalue != undefined) {
-								let color = null;
-								color = cellvalue
-								color = color.replace('#', '');
-								const color1 = color.substring(0, 2);
-								const color2 = color.substring(2, 4);
-								const color3 = color.substring(4, 6);
-								color = parseInt('ff' + color3 + color2 + color1, 16);
-								//get settings of source from OBS
-								let colorsettings = await obs.call("GetInputSettings", {
-									inputName: source.sourceName,
-								});
-								let oldfile = await colorsettings['inputSettings']['color']
-								//check if current OBS settings is different
-								if (color != oldfile){
-									console.log(`Updated: ${reference} from ${oldfile} to ${color} on source: ${source.sourceName}`);
-									await obs.call("SetInputSettings", {
-										inputName: source.sourceName,
-										inputSettings: {
-											color: color
-										}
-									});	
-								} else {
-									//console.log('Color is the same');
-								}
+								//console.log('Color is the same');
 							}
 						}
-						// If Source type is Image
-						if (sourcetype == "Image"){
-							//get settings of source from OBS
-							let imagesettings = await obs.call("GetInputSettings", {
-								inputName: source.sourceName,
-							});	
-							let oldfile = await imagesettings['inputSettings']['file']
-							const split = cellvalue.split(';');
-							if (cellvalue.startsWith('?')) {
-								cellvalue = split[1];
-							}
-							//Hide
-							if (split[0].startsWith('?hide')) {
-								obs.call("SetSceneItemEnabled", {
-									sceneName: scene.sceneName,
-									sceneItemId: source.sceneItemId,
-									sceneItemEnabled: false
-								});
-							}
-							//check if current OBS settings is different
+					}
+					// If Source type is Image
+					if (sourcetype == "Image"){
+						//get settings of source from OBS
+						let imagesettings = await obs.call("GetInputSettings", {
+							inputName: source.sourceName,
+						});	
+						let oldfile = await imagesettings['inputSettings']['file']
+						let hidetime = 1;
+						const split = cellvalue.split(';');
+						if (cellvalue.startsWith('?')) {
+							cellvalue = split[1];
+						}
+						//Hide
+						if (split[0].startsWith('?hide')) {
+							obs.call("SetSceneItemEnabled", {
+								sceneName: scene.sceneName,
+								sceneItemId: source.sceneItemId,
+								sceneItemEnabled: false
+							});
+							hidetime = 2000
+						}
+						//check if current OBS settings is different
+						setTimeout(function(){
 							if (cellvalue != oldfile){
 								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
-								await obs.call("SetInputSettings", {
+								obs.call("SetInputSettings", {
 									inputName: source.sourceName,
 									inputSettings: {
 										file: cellvalue
@@ -164,60 +159,59 @@ const update = async (obs) => {
 							} else {
 								//console.log('Image is the same');
 							}
-							//Hide-Show status
-							setTimeout(function(){
-								if (split[0].startsWith('?show')) {
-									obs.call("SetSceneItemEnabled", {
-										sceneName: scene.sceneName,
-										sceneItemId: source.sceneItemId,
-										sceneItemEnabled: true
-									});
-								}
-							}, 500);
-						}
-						// If Source type is Browser
-						if (sourcetype == "Browser"){
-							//get settings of source from OBS
-							let browsersettings = await obs.call("GetInputSettings", {
-								inputName: source.sourceName
-							});
-							let oldfile = await browsersettings['inputSettings']['url']
-							//check if current OBS settings is different
-							if (cellvalue != oldfile){
-								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
-								await obs.call("SetInputSettings", {
-									inputName: source.sourceName,
-									inputSettings: {
-										url: cellvalue
-									}
-								});
-							} else {
-								//console.log('Browser is the same');
-							}
-						}
-						// If Source type is HS
-						if (sourcetype == "HS"){
-							if (cellvalue.startsWith('hide')) {
-								await obs.call("SetSceneItemEnabled", {
-									sceneName: scene.sceneName,
-									sceneItemId: source.sceneItemId,
-									sceneItemEnabled: false
-								});
-								console.log(`Updated: ${reference} set to hidden on source: ${source.sourceName}`);
-							} else if (cellvalue.startsWith('show')) {
-								await obs.call("SetSceneItemEnabled", {
+						}, hidetime);
+						//Show
+						setTimeout(function(){
+							if (split[0].startsWith('?show')) {
+								obs.call("SetSceneItemEnabled", {
 									sceneName: scene.sceneName,
 									sceneItemId: source.sceneItemId,
 									sceneItemEnabled: true
 								});
-								console.log(`Updated: ${reference} set to visible on source: ${source.sourceName}`);
 							}
+						}, 500);
+					}
+					// If Source type is Browser
+					if (sourcetype == "Browser"){
+						//get settings of source from OBS
+						let browsersettings = await obs.call("GetInputSettings", {
+							inputName: source.sourceName
+						});
+						let oldfile = await browsersettings['inputSettings']['url']
+						//check if current OBS settings is different
+						if (cellvalue != oldfile){
+							console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
+							await obs.call("SetInputSettings", {
+								inputName: source.sourceName,
+								inputSettings: {
+									url: cellvalue
+								}
+							});
+						} else {
+							//console.log('Browser is the same');
 						}
-					//}
+					}
+					// If Source type is HS
+					if (sourcetype == "HS"){
+						if (cellvalue.startsWith('hide')) {
+							await obs.call("SetSceneItemEnabled", {
+								sceneName: scene.sceneName,
+								sceneItemId: source.sceneItemId,
+								sceneItemEnabled: false
+							});
+							console.log(`Updated: ${reference} set to hidden on source: ${source.sourceName}`);
+						} else if (cellvalue.startsWith('show')) {
+							await obs.call("SetSceneItemEnabled", {
+								sceneName: scene.sceneName,
+								sceneItemId: source.sceneItemId,
+								sceneItemEnabled: true
+							});
+							console.log(`Updated: ${reference} set to visible on source: ${source.sourceName}`);
+						}
+					}
 				}
 			});  
 		});
-		
 		// Write data.json to check if sheets been changed
 		const fs = await require('fs');
 		const jsonContent = await JSON.stringify(data);
