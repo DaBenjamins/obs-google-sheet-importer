@@ -127,18 +127,23 @@ const update = async (obs) => {
 					}
 					// If Source type is Image
 					if (sourcetype == "Image"){
+						let permvalue = ""
 						//get settings of source from OBS
 						let imagesettings = await obs.call("GetInputSettings", {
 							inputName: source.sourceName,
 						});	
 						let oldfile = await imagesettings['inputSettings']['file']
 						let hidetime = 1;
-						const split = cellvalue.split(';');
-						if (cellvalue.startsWith('?')) {
-							cellvalue = split[1];
+						if (cellvalue != undefined) {
+							if (cellvalue.startsWith('?')) {
+								const split = cellvalue.split(';');
+								cellvalue = split[1];
+								permvalue = split[0];
+							}
 						}
 						//Hide
-						if (split[0].startsWith('?hide')) {
+
+						if (permvalue.startsWith('?hide')) {
 							obs.call("SetSceneItemEnabled", {
 								sceneName: scene.sceneName,
 								sceneItemId: source.sceneItemId,
@@ -146,6 +151,7 @@ const update = async (obs) => {
 							});
 							hidetime = 2000
 						}
+
 						//check if current OBS settings is different
 						setTimeout(function(){
 							if (cellvalue != oldfile){
@@ -162,7 +168,7 @@ const update = async (obs) => {
 						}, hidetime);
 						//Show
 						setTimeout(function(){
-							if (split[0].startsWith('?show')) {
+							if (permvalue.startsWith('?show')) {
 								obs.call("SetSceneItemEnabled", {
 									sceneName: scene.sceneName,
 									sceneItemId: source.sceneItemId,
