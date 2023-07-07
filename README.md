@@ -48,6 +48,8 @@ Change the cell text to `?color=000000;Any text here` to set the text color in O
 
 ## Controlling Image Sources
 Any image URL in a cell is set as the image in the source. Empty cells are not updated.
+### Hiding/Showing a Text Source
+Change the cell text to begin with `?hide;Image here` or `?show;Image here` to disable/enable the text source (with the last text that was set)
 
 ## Controlling Color Sources
 Any #hexcode in a cell is set as the color in the source. Empty cells are not updated.
