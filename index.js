@@ -175,7 +175,7 @@ const update = async (obs) => {
 									sceneItemEnabled: true
 								});
 							}
-						}, 500);
+						}, 750);
 					}
 					// If Source type is Browser
 					if (sourcetype == "Browser"){
