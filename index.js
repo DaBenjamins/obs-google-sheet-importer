@@ -6,19 +6,19 @@ const config = require('./config.json');
 const update = async (obs) => {
 	const data = await sheetLoader.loadData();
   	const { readFileSync } = await require('fs');
-	//Reads Data.json
+	// Reads Data.json
 	try {
 		json = readFileSync('./data.json', 'utf8');
 	}catch(e){
 		json = "[]";
 	};
-	//if empty check
+	// if empty check
 	if (json == undefined || json == ""){
 		json = "[]";
 	}
 	json = JSON.parse(json);
 	
-	//check if sheets is same as json
+	// check if sheets is same as json
 	if ( data.toString() != json.toString()) {
 		console.log("Sheets Updated");		
 		
@@ -27,11 +27,28 @@ const update = async (obs) => {
 		const startrow = startcell.match("[0-9]+");
 		const rowoffset = startrow[0];
 		const sceneList = await obs.call('GetSceneList');
+		const groupList = await obs.call('GetGroupList');
+		var sceneNameList = []
+		var allSources
 		
+		// Gets all Scene and Group names
 		await sceneList.scenes.forEach(async scene => {
+			sceneNameList.push([scene.sceneName, 0]);
+		});
+		await groupList.groups.forEach(async group => {
+			sceneNameList.push([group, 1])
+		});
+		
+		await sceneNameList.forEach(async scene => {
 			// unfold group children
-			const allSources = await obs.call('GetSceneItemList', {sceneName: scene.sceneName});
-			//const allSources = getChildren(allSourcesNGroups);
+			
+			// If Group
+			if(scene[1] == 0){
+				allSources = await obs.call('GetSceneItemList', {sceneName: scene[0]});
+			} else {
+				allSources = await obs.call('GetGroupSceneItemList', {sceneName: scene[0]});
+			}
+
 			await allSources.sceneItems.forEach(async source => {
 				if (source.sourceName.includes('|sheet')) {
 					const reference = source.sourceName.split('|sheet')[1].trim();
@@ -59,7 +76,7 @@ const update = async (obs) => {
 							const split = cellvalue.split(';');
 							cellvalue = split[1];
 							await obs.call("SetSceneItemEnabled", {
-								sceneName: scene.sceneName,
+								sceneName: scene[0],
 								sceneItemId: source.sceneItemId,
 								sceneItemEnabled: false
 							});
@@ -67,7 +84,7 @@ const update = async (obs) => {
 							const split = cellvalue.split(';');
 							cellvalue = split[1];
 							await obs.call("SetSceneItemEnabled", {
-								sceneName: scene.sceneName,
+								sceneName: scene[0],
 								sceneItemId: source.sceneItemId,
 								sceneItemEnabled: true
 							});
@@ -142,16 +159,14 @@ const update = async (obs) => {
 							}
 						}
 						//Hide
-
 						if (permvalue.startsWith('?hide')) {
 							obs.call("SetSceneItemEnabled", {
-								sceneName: scene.sceneName,
+								sceneName: scene[0],
 								sceneItemId: source.sceneItemId,
 								sceneItemEnabled: false
 							});
 							hidetime = 2000
 						}
-
 						//check if current OBS settings is different
 						setTimeout(function(){
 							if (cellvalue != oldfile){
@@ -170,12 +185,12 @@ const update = async (obs) => {
 						setTimeout(function(){
 							if (permvalue.startsWith('?show')) {
 								obs.call("SetSceneItemEnabled", {
-									sceneName: scene.sceneName,
+									sceneName: scene[0],
 									sceneItemId: source.sceneItemId,
 									sceneItemEnabled: true
 								});
 							}
-						}, 750);
+						}, 500);
 					}
 					// If Source type is Browser
 					if (sourcetype == "Browser"){
@@ -201,14 +216,14 @@ const update = async (obs) => {
 					if (sourcetype == "HS"){
 						if (cellvalue.startsWith('hide')) {
 							await obs.call("SetSceneItemEnabled", {
-								sceneName: scene.sceneName,
+								sceneName: scene[0],
 								sceneItemId: source.sceneItemId,
 								sceneItemEnabled: false
 							});
 							console.log(`Updated: ${reference} set to hidden on source: ${source.sourceName}`);
 						} else if (cellvalue.startsWith('show')) {
 							await obs.call("SetSceneItemEnabled", {
-								sceneName: scene.sceneName,
+								sceneName: scene[0],
 								sceneItemId: source.sceneItemId,
 								sceneItemEnabled: true
 							});
