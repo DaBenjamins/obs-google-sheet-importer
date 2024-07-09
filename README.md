@@ -1,4 +1,4 @@
-# OBS Google Sheet Importer v1.3.1
+# OBS Google Sheet Importer v1.4.2
 This tool allows you to dynamically update content, color and visibility of text sources in OBS through a google sheet.
 
 # Prerequisites
@@ -39,22 +39,22 @@ For example, `Text Source 1 |sheet 5` would be controlled by the contents of Row
 
 ## Controlling Text Sources
 ### Setting Text
-Any text in a cell is set as the text in the source. Empty cells are not updated.
+Any text in a cell is set as the text in the source.
 ### Hiding/Showing a Text Source
 Change the cell text to begin with `?hide;Any text here` or `?show;Any text here` to disable/enable the text source (with the last text that was set)
 ### Changing Text Color
 Change the cell text to `?color=000000;Any text here` to set the text color in OBS with hex colors.
 
 ## Controlling Image Sources
-Any image URL in a cell is set as the image in the source. Empty cells are not updated.
+Any image URL in a cell is set as the image in the source.
 ### Hiding/Showing a Image Source
 Change the cell text to begin with `?hide;Image here` or `?show;Image here` to disable/enable the text source (with the last text that was set)
 
 ## Controlling Color Sources
-Any #hexcode in a cell is set as the color in the source. Empty cells are not updated.
+Any #hexcode in a cell is set as the color in the source.
 
 ## Controlling Browser Sources
-Any URL in a cell is set as the webpage in the source. Empty cells are not updated.
+Any URL in a cell is set as the webpage in the source.
 
 ## Controlling Visibility Only
-Any "hide"/"show" in a cell is set as the sources visability. Empty cells are not updated.
+Any "hide"/"show" in a cell is set as the sources visability.
