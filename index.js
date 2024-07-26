@@ -6,13 +6,18 @@ const config = require('./config.json');
 // Auto Update
 const AutoGitUpdate = require('auto-git-update');
 
-const config = {
+const configUP = {
     repository: 'https://github.com/DaBenjamins/obs-google-sheet-importer',
     fromReleases: true,
-    tempLocation: 'C:/TEMP/',
+    tempLocation: './tmp/',
+	executeOnComplete: './start.bat',
+    exitOnComplete: true
 }
 
-const updater = new AutoGitUpdate(config);
+const updater = new AutoGitUpdate(configUP);
+
+const versionComp = updater.compareVersions();
+console.log(versionComp);
 
 updater.autoUpdate();
 // Auto Update End
