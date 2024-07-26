@@ -1,6 +1,6 @@
 {
   "name": "obs-google-sheet-importer",
-  "version": "1.3.1",
+  "version": "1.4.2",
   "main": "index.js",
   "repository": "https://github.com/DaBenjamins/obs-google-sheet-importer.git",
   "author": "michael benjamins <mike@benja.cc>",
