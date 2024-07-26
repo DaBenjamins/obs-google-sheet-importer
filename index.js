@@ -3,6 +3,20 @@ const {default: OBSWebSocket} = require('obs-websocket-js');
 const sheetLoader = require('./sheet-loader');
 const config = require('./config.json');
 
+// Auto Update
+const AutoGitUpdate = require('auto-git-update');
+
+const config = {
+    repository: 'https://github.com/DaBenjamins/obs-google-sheet-importer',
+    fromReleases: true,
+    tempLocation: 'C:/TEMP/',
+}
+
+const updater = new AutoGitUpdate(config);
+
+updater.autoUpdate();
+// Auto Update End
+
 const update = async (obs) => {
 	const data = await sheetLoader.loadData();
   	const { readFileSync } = await require('fs');
