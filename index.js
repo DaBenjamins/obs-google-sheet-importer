@@ -1,4 +1,4 @@
-const {default: OBSWebSocket} = require('obs-websocket-js');
+const {default: OBSWebSocket} = require('obs-websocket-js');//
 
 const sheetLoader = require('./sheet-loader');
 const config = require('./config.json');
