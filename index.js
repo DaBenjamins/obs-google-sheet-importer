@@ -3,7 +3,7 @@ const {default: OBSWebSocket} = require('obs-websocket-js');
 const sheetLoader = require('./sheet-loader');
 const config = require('./config.json');
 
-var json = JSON.parse("[]");
+let json = JSON.parse("[]");
 
 const update = async (obs) => {
 	const data = await sheetLoader.loadData();
@@ -20,8 +20,8 @@ const update = async (obs) => {
 		const rowoffset = startrow[0];
 		const sceneList = await obs.call('GetSceneList');
 		const groupList = await obs.call('GetGroupList');
-		var sceneNameList = []
-		var allSources
+		let sceneNameList = []
+		let allSources
 		
 		// Gets all Scene and Group names
 		await sceneList.scenes.forEach(async scene => {
