@@ -1,26 +1,7 @@
-const {default: OBSWebSocket} = require('obs-websocket-js');//
+const {default: OBSWebSocket} = require('obs-websocket-js');
 
 const sheetLoader = require('./sheet-loader');
 const config = require('./config.json');
-
-// Auto Update
-const AutoGitUpdate = require('auto-git-update');
-
-const configUP = {
-    repository: 'https://github.com/DaBenjamins/obs-google-sheet-importer',
-    fromReleases: true,
-    tempLocation: './tmp/',
-	executeOnComplete: './start.bat',
-    exitOnComplete: true
-}
-
-const updater = new AutoGitUpdate(configUP);
-
-const versionComp = updater.compareVersions();
-console.log(versionComp);
-
-updater.autoUpdate();
-// Auto Update End
 
 const update = async (obs) => {
 	const data = await sheetLoader.loadData();
