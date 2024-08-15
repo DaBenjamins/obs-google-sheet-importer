@@ -49,7 +49,7 @@ Change the cell text to `?color=000000;Any text here` to set the text color in O
 Any image URL in a cell is set as the image in the source.
 ### Hiding/Showing a Image Source
 Change the cell text to begin with `?hide;Image here` or `?show;Image here` to disable/enable the text source (with the last text that was set).
-Their is a 1500ms delay before disabling, and a 750ms delay before enabling.
+Their is a 1500ms delay after disabling, and a 750ms delay before enabling.
 
 ## Controlling Color Sources
 Any #hexcode in a cell is set as the color in the source.
