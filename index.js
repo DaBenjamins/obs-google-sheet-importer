@@ -31,16 +31,14 @@ const update = async (obs) => {
 			sceneNameList.push([group, 1])
 		});
 		
-		await sceneNameList.forEach(async scene => {
-			// unfold group children
-			
+		await sceneNameList.forEach(async scene => {		
 			// If Group
 			if(scene[1] == 0){
 				allSources = await obs.call('GetSceneItemList', {sceneName: scene[0]});
 			} else {
 				allSources = await obs.call('GetGroupSceneItemList', {sceneName: scene[0]});
 			}
-
+			// Scan sources
 			await allSources.sceneItems.forEach(async source => {
 				if (source.sourceName.includes('|sheet')) {
 					const reference = source.sourceName.split('|sheet')[1].trim();
@@ -157,7 +155,7 @@ const update = async (obs) => {
 								sceneItemId: source.sceneItemId,
 								sceneItemEnabled: false
 							});
-							hidetime = 1500
+							hidetime = 1500 // If hiding, delay source change
 						}
 						//check if current OBS settings is different
 						setTimeout(function(){
@@ -242,9 +240,7 @@ const main = async () => {
 	});
 
 	if (coned == 0){
-		
 		console.log('Connected to OBS!');
-
 		const updateWrapped = () => update(obs).catch(e => {
 			if(e.message == "Not connected"){
 				obs.connect(config.obsaddress, config.obsauth).catch(e => {
@@ -257,7 +253,6 @@ const main = async () => {
 		});
 		setInterval(updateWrapped, config.polling);
 	}
-
 }
 
 main().catch(e => {
