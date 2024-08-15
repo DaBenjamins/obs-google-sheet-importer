@@ -165,7 +165,7 @@ const update = async (obs) => {
 								sceneItemId: source.sceneItemId,
 								sceneItemEnabled: false
 							});
-							hidetime = 2000
+							hidetime = 1500
 						}
 						//check if current OBS settings is different
 						setTimeout(function(){
@@ -190,7 +190,7 @@ const update = async (obs) => {
 									sceneItemEnabled: true
 								});
 							}
-						}, 500);
+						}, 750);
 					}
 					// If Source type is Browser
 					if (sourcetype == "Browser"){
