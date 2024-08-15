@@ -24,7 +24,7 @@ Make sure the Websocket is enabled (`Tools -> WebSocket Server Settings -> Enabl
 Open `config-dist.json` and set the following values:
 - sheetId: The ID of the google sheet (you can copy this from the sheets link, e.g. `https://docs.google.com/spreadsheets/d/this-bit-here-is-the-sheet-id/edit#gid=0`)
 - tabname: The tab name where you need data from
-- range: The range of Rows you need data from, must be column C through D (in A1 notation, e.g. `C1:D50`)
+- range: The range of Rows you need data from, must be column C through D (in A1 notation, e.g. `C2:D`)
 - apikey: Your Google Sheets API Key
 - obsaddress: The address of your OBS Websocket, default is ws://localhost:4455 for local OBS instance
 - obsauth: The password configured in your OBS Websocket, leave empty for no authentication
