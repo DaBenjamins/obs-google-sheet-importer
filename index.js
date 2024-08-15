@@ -3,23 +3,15 @@ const {default: OBSWebSocket} = require('obs-websocket-js');
 const sheetLoader = require('./sheet-loader');
 const config = require('./config.json');
 
+var json = JSON.parse("[]");
+
 const update = async (obs) => {
 	const data = await sheetLoader.loadData();
-  	const { readFileSync } = await require('fs');
-	// Reads Data.json
-	try {
-		json = readFileSync('./data.json', 'utf8');
-	}catch(e){
-		json = "[]";
-	};
-	// if empty check
-	if (json == undefined || json == ""){
-		json = "[]";
-	}
-	json = JSON.parse(json);
 	
 	// check if sheets is same as json
 	if ( data.toString() != json.toString()) {
+		json = data
+		
 		console.log("Sheets Updated");		
 		
 		const range = config.range;
@@ -233,15 +225,7 @@ const update = async (obs) => {
 				}
 			});  
 		});
-		// Write data.json to check if sheets been changed
-		const fs = await require('fs');
-		const jsonContent = await JSON.stringify(data);
-		await fs.writeFile("./data.json", jsonContent, 'utf8', function (err) {
-			if (err) {
-				return console.log(err);
-			}
-			console.log("The file was saved!");
-		});
+
 	}
 }
 
