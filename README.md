@@ -1,4 +1,4 @@
-# OBS Google Sheet Importer v1.4.3
+# OBS Google Sheet Importer v1.4.4
 This tool allows you to dynamically update content, color and visibility of text sources in OBS through a google sheet.
 
 # Prerequisites
