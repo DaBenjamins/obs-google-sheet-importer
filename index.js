@@ -46,7 +46,11 @@ const update = async (obs) => {
 					let rownumber = row[0] - rowoffset;
 					let cellvalue = data[1][rownumber];
 					let sourcetype = data[0][rownumber];
-		
+
+					if (cellvalue === undefined){
+						cellvalue = ""
+					}
+
 					// If Source type is Text
 					if (sourcetype == "Text"){
 						let color = null;
