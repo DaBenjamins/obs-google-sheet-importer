@@ -60,7 +60,7 @@ Any URL in a cell is set as the webpage in the source.
 ## Controlling Visibility Only
 Any "hide"/"show" in a cell is set as the sources visability.
 
-## Controlling Media Sources
+## Controlling Video Sources
 Any Local File path in a cell is set as the video in the source.
 ### Hiding/Showing a Image Source
 Change the cell text to begin with `?hide;video here` or `?show;video here` to disable/enable the text source (with the last text that was set).
