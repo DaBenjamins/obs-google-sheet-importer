@@ -1,10 +1,10 @@
 {
   "sheetId": "id",
-  "tabname": "Sheet1",
+  "tabname": "Interface",
   "range": "C2:D",
   "dimension": "COLUMNS",
   "apikey": "secretkey",
-  "obsaddress": "ws://localhost:4444",
+  "obsaddress": "ws://localhost:4455",
   "obsauth": "",
   "polling": 2000
 }
