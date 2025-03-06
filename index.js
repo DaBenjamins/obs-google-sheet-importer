@@ -186,6 +186,56 @@ const update = async (obs) => {
 							}
 						}, 750);
 					}
+					// If Source type is Video
+					if (sourcetype == "Video"){
+						let permvalue = ""
+						//get settings of source from OBS
+						let videosettings = await obs.call("GetInputSettings", {
+							inputName: source.sourceName,
+						});	
+						let oldfile = await videosettings['inputSettings']['local_file']
+						let hidetime = 1;
+						if (cellvalue != undefined) {
+							if (cellvalue.startsWith('?')) {
+								const split = cellvalue.split(';');
+								cellvalue = split[1];
+								permvalue = split[0];
+							}
+						}
+						//Hide
+						if (permvalue.startsWith('?hide')) {
+							obs.call("SetSceneItemEnabled", {
+								sceneName: scene[0],
+								sceneItemId: source.sceneItemId,
+								sceneItemEnabled: false
+							});
+							hidetime = 1500 // If hiding, delay source change
+						}
+						//check if current OBS settings is different
+						setTimeout(function(){
+							if (cellvalue != oldfile){
+								console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
+								obs.call("SetInputSettings", {
+									inputName: source.sourceName,
+									inputSettings: {
+										local_file: cellvalue
+									}
+								});	
+							} else {
+								//console.log('Image is the same');
+							}
+						}, hidetime);
+						//Show
+						setTimeout(function(){
+							if (permvalue.startsWith('?show')) {
+								obs.call("SetSceneItemEnabled", {
+									sceneName: scene[0],
+									sceneItemId: source.sceneItemId,
+									sceneItemEnabled: true
+								});
+							}
+						}, 750);
+					}
 					// If Source type is Browser
 					if (sourcetype == "Browser"){
 						//get settings of source from OBS
