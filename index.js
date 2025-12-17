@@ -54,6 +54,7 @@ const update = async (obs) => {
 					// If Source type is Text
 					if (sourcetype == "Text"){
 						let color = null;
+						let fontstyle = null;
 						//check if ?color tag is present
 						if (cellvalue.startsWith('?color')) {
 							const split = cellvalue.split(';');
@@ -64,6 +65,17 @@ const update = async (obs) => {
 							const color2 = color.substring(2, 4);
 							const color3 = color.substring(4, 6);
 							color = parseInt('ff' + color3 + color2 + color1, 16);
+						}
+						//check if ?color tag is present
+						if (cellvalue.startsWith('?fontstyle')) {
+							const split = cellvalue.split(';');
+							cellvalue = split[1];
+							if(split[0].split('=')[1] == 'strikethrough'){
+								fontstyle = 8
+							}
+							if(split[0].split('=')[1] == 'underline'){
+								fontstyle = 4
+							}
 						}
 						//check if ?hide/?show tag is present
 						if (cellvalue.startsWith('?hide')) {
@@ -89,17 +101,22 @@ const update = async (obs) => {
 						});
 						let oldfile = await textsettings['inputSettings']['text']
 						let oldcolor = await textsettings['inputSettings']['color']
+						let oldfont = await textsettings['inputSettings']['font']
 						//check if current OBS settings is different
 						if (cellvalue != oldfile){
 							if (color == null){
 								color = oldcolor
+							}
+							if (fontstyle != null){
+								oldfont['flags'] = fontstyle
 							}
 							// Update to OBS
 							await obs.call("SetInputSettings", {
 								inputName: source.sourceName,
 								inputSettings: {
 									text: cellvalue,
-									color: color
+									color: color,
+									font: oldfont
 								}
 							});
 							console.log(`Updated: ${reference} from ${oldfile} to ${cellvalue} on source: ${source.sourceName}`);
